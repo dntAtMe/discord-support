@@ -51,7 +51,7 @@ func main() {
         return
     }
 
-    discord.AddHandler(basicInteractionHandler)
+    discord.AddHandler(interactionHandler)
     // discord.Identify.Intents = discordgo.IntentsGuildMessages
 
     _, err = discord.ApplicationCommandCreate(auth.AppID, auth.GuildID, &discordgo.ApplicationCommand {
@@ -79,6 +79,21 @@ func main() {
     <-sc
 }
 
+func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+    switch i.Type {
+    case discordgo.InteractionApplicationCommand:
+        basicInteractionHandler(s, i)
+    case discordgo.InteractionMessageComponent:
+        componentId := i.MessageComponentData().CustomID
+        componentInteractionHandler(s, i, componentId)
+    }
+}
+
+func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate, componentId string) {
+    if componentId == "yes" {
+        fmt.Println("Yes pressed")
+    }
+}
 
 
 func basicInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
