@@ -7,18 +7,47 @@ import (
 
 var usedLocale locale.Locale = locale.Locale_pl 
 
-var yesOrNoButtons = []discordgo.MessageComponent {
-    discordgo.Button {
-        Label: usedLocale.Yes,
-        Style: discordgo.SuccessButton,
-        Disabled: false,
-        CustomID: "yes",
+var helpButton = []discordgo.MessageComponent {
+    discordgo.ActionsRow {
+        Components: []discordgo.MessageComponent {
+            discordgo.Button {
+                Label: usedLocale.BUTTON_HELP,
+                Style: discordgo.PrimaryButton,
+                Disabled: false, 
+                CustomID: "help",
+            },
+        },
     },
-    discordgo.Button {
-        Label: usedLocale.No,
-        Style: discordgo.DangerButton,
-        Disabled: false,
-        CustomID: "no",
+}
+
+var yesOrNoButtons = []discordgo.MessageComponent {
+    discordgo.ActionsRow {
+        Components: []discordgo.MessageComponent {
+            discordgo.Button {
+                Label: usedLocale.BUTTON_YES,
+                Style: discordgo.SuccessButton,
+                Disabled: false,
+                CustomID: "yes",
+            },
+            discordgo.Button {
+                Label: usedLocale.BUTTON_NO,
+                Style: discordgo.DangerButton,
+                Disabled: false,
+                CustomID: "no",
+            },
+        },
+    },
+}
+
+var helpMenu = []discordgo.MessageComponent {
+    discordgo.ActionsRow {
+        Components: []discordgo.MessageComponent {
+            discordgo.SelectMenu {
+                CustomID: "select_category",
+                Placeholder: usedLocale.MENU_HELP_PLACEHOLDER,
+                Options: helpCategories,
+            },
+        },
     },
 }
 

@@ -52,6 +52,7 @@ func main() {
     }
 
     discord.AddHandler(interactionHandler)
+    discord.AddHandler(messageHandler)
     // discord.Identify.Intents = discordgo.IntentsGuildMessages
 
     _, err = discord.ApplicationCommandCreate(auth.AppID, auth.GuildID, &discordgo.ApplicationCommand {
@@ -84,14 +85,46 @@ func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
     case discordgo.InteractionApplicationCommand:
         basicInteractionHandler(s, i)
     case discordgo.InteractionMessageComponent:
-        componentId := i.MessageComponentData().CustomID
-        componentInteractionHandler(s, i, componentId)
+        componentInteractionHandler(s, i)
     }
 }
 
-func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate, componentId string) {
+func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+    componentId := i.MessageComponentData().CustomID
+
     if componentId == "yes" {
-        fmt.Println("Yes pressed")
+        s.GuildChannelCreateComplex(i.GuildID, discordgo.GuildChannelCreateData {
+            Name: "test-topic",
+            Type: 0,
+        })
+        s.ChannelMessageDelete(i.Interaction.ChannelID, i.Interaction.Message.ID)
+    }
+
+    switch componentId {
+    case "help":
+        err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse {
+            Type: discordgo.InteractionResponseChannelMessageWithSource,
+            Data: &discordgo.InteractionResponseData {
+                Content: "Wybierz kategorię",
+                Flags: 1 << 6,
+                Components: helpMenu,
+            },
+        })
+
+        if err != nil {
+            fmt.Println(err)
+        }
+    case "select_category":
+        // value: i.MessageComponentData().Values[0]
+
+        s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse {
+            Type: discordgo.InteractionResponseUpdateMessage,
+            Data: &discordgo.InteractionResponseData {
+                Content: "Aby ubiegać się o biznes, to x y z. Czy chcesz założyć nowy temat?",
+                Flags: 1 << 6,
+                Components: yesOrNoButtons,
+            },
+        })
     }
 }
 
@@ -102,20 +135,7 @@ func basicInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
         Data: &discordgo.InteractionResponseData {
             Content: "Dupa",
             Flags: 1 << 6,
-            Components: []discordgo.MessageComponent {
-                discordgo.ActionsRow {
-                    Components: yesOrNoButtons,
-                },
-                discordgo.ActionsRow {
-                    Components: []discordgo.MessageComponent {
-                        discordgo.SelectMenu {
-                            CustomID: "select",
-                            Placeholder: "Z czym potrzebujesz pomocy?",
-                            Options: helpCategories,
-                        },
-                    },
-                },
-            },
+            Components: helpMenu,
         },
     })
 
@@ -155,6 +175,7 @@ func basicInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+    // Only consider messages from dev guild
     if m.GuildID != "973657194283274251" {
         return
     }
@@ -164,7 +185,14 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
     }
 
     if m.Content == "ping" {
-        s.ChannelMessageSend(m.ChannelID, "pong")
+        _, err := s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend {
+            Content: "Opis że przycisk wcisnac jesli jest potrzeba kontaktu z administracja",
+            Components: helpButton,
+        })
+
+        if err != nil {
+            fmt.Println(err)
+        }
     }
 }
 
