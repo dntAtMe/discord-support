@@ -1,9 +1,7 @@
 package main
 
 import (
-    "encoding/json"
     "log"
-    "io/ioutil"
     "fmt"
     "os"
     "os/signal"
@@ -11,31 +9,6 @@ import (
 
     "github.com/bwmarrin/discordgo"
 )
-
-type Auth struct {
-    Token string `json:"token"`
-    AppID string `json:"appId"`
-    GuildID string `json:"guildId"`
-}
-
-var configPath = "config/"
-
-func ReadAuth(auth *Auth) {
-    authPath := fmt.Sprintf("%sauth.json", configPath)
-    jsonFile, err := os.Open(authPath)
-    
-    defer jsonFile.Close()
-
-    // TODO: Should throw an error instead
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    byteValue, _ := ioutil.ReadAll(jsonFile)
-
-    json.Unmarshal(byteValue, auth)
-}
 
 func main() {
     var auth Auth
