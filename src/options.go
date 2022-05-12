@@ -20,23 +20,25 @@ var helpButton = []discordgo.MessageComponent {
     },
 }
 
-var yesOrNoButtons = []discordgo.MessageComponent {
-    discordgo.ActionsRow {
-        Components: []discordgo.MessageComponent {
-            discordgo.Button {
-                Label: usedLocale.BUTTON_YES,
-                Style: discordgo.SuccessButton,
-                Disabled: false,
-                CustomID: "yes",
-            },
-            discordgo.Button {
-                Label: usedLocale.BUTTON_NO,
-                Style: discordgo.DangerButton,
-                Disabled: false,
-                CustomID: "no",
+func yesOrNoButtons(yesId string, noId string) []discordgo.MessageComponent {
+    return []discordgo.MessageComponent {
+        discordgo.ActionsRow {
+            Components: []discordgo.MessageComponent {
+                discordgo.Button {
+                    Label: usedLocale.BUTTON_YES,
+                    Style: discordgo.SuccessButton,
+                    Disabled: false,
+                    CustomID: yesId,
+                },
+                discordgo.Button {
+                    Label: usedLocale.BUTTON_NO,
+                    Style: discordgo.DangerButton,
+                    Disabled: false,
+                    CustomID: noId,
+                },
             },
         },
-    },
+    }
 }
 
 var helpMenu = []discordgo.MessageComponent {
@@ -61,13 +63,8 @@ var helpCategories = []discordgo.SelectMenuOption {
         Default: false,
         Description: "Jeśli masz pomysł na biznes który chciałbyś prowadzić, tutaj możesz go opisać.",
     },
-    {
-        Label: "Propozycja biznesu",
-        Value: "gang",
-        Emoji: discordgo.ComponentEmoji {
-            Name: "💼",
-        },
-        Default: false,
-        Description: "Jeśli masz pomysł na biznes który chciałbyś prowadzić, tutaj możesz go opisać.",
-    },
+}
+
+var categoryRoles = map[string][]Role {
+    "business": { roles["CommunityManager"] },
 }

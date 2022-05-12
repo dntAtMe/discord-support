@@ -89,15 +89,33 @@ func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
     }
 }
 
-func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
     componentId := i.MessageComponentData().CustomID
 
-    if componentId == "yes" {
+    // Confirmation on business topic creation
+    // TODO: Automatically assign name, parent ID and role overwrites based on chosen option
+    if componentId == "business" {
         s.GuildChannelCreateComplex(i.GuildID, discordgo.GuildChannelCreateData {
             Name: "test-topic",
             Type: 0,
+            ParentID: "974322254227841044",
+            PermissionOverwrites: []*discordgo.PermissionOverwrite {
+                {
+                    ID: i.Member.User.ID,
+                    Type: discordgo.PermissionOverwriteTypeMember,
+                    Allow: 1 << 10,
+                },
+            },
         })
-        s.ChannelMessageDelete(i.Interaction.ChannelID, i.Interaction.Message.ID)
+    }
+}
+
+func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+    componentId := i.MessageComponentData().CustomID
+
+    // Triggered by a button
+    if i.Message != nil {
+        buttonInteractionHandler(s, i)
     }
 
     switch componentId {
@@ -122,7 +140,7 @@ func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionC
             Data: &discordgo.InteractionResponseData {
                 Content: "Aby ubiegać się o biznes, to x y z. Czy chcesz założyć nowy temat?",
                 Flags: 1 << 6,
-                Components: yesOrNoButtons,
+                Components: yesOrNoButtons("business", "no"),
             },
         })
     }
