@@ -13,7 +13,7 @@ import (
 func main() {
     var auth Auth
 
-    ReadAuth(&auth)
+    ReadAuth(&auth, "auth.json")
 
     botToken := fmt.Sprintf("Bot %s", auth.Token)
 

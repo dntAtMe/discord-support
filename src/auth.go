@@ -7,18 +7,17 @@ import (
     "os"
 )
 
-// TODO: Write unit tests for reading auth data
-
 type Auth struct {
     Token string `json:"token"`
     AppID string `json:"appId"`
     GuildID string `json:"guildId"`
 }
 
-var configPath = "config/"
+var configPath = "../config/"
 
-func ReadAuth(auth *Auth) {
-    authPath := fmt.Sprintf("%sauth.json", configPath)
+func ReadAuth(auth *Auth, fileName string) {
+
+    authPath := fmt.Sprintf("%s%s", configPath, fileName)
     jsonFile, err := os.Open(authPath)
     
     if err != nil {
