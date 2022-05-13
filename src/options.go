@@ -41,6 +41,22 @@ func yesOrNoButtons(yesId string, noId string) []discordgo.MessageComponent {
     }
 }
 
+var closeTopicMessage  = &discordgo.MessageSend {
+    Content: "",
+    Components: []discordgo.MessageComponent {
+        discordgo.ActionsRow {
+            Components: []discordgo.MessageComponent {
+                discordgo.Button {
+                    Label: usedLocale.BUTTON_CLOSE_TOPIC,
+                    Style: discordgo.DangerButton,
+                    Disabled: false,
+                    CustomID: "close-topic",
+                },
+            },
+        },
+    },
+}
+
 var helpMenu = []discordgo.MessageComponent {
     discordgo.ActionsRow {
         Components: []discordgo.MessageComponent {

@@ -1,13 +1,14 @@
 package main
 
 import (
-    "log"
-    "fmt"
-    "os"
-    "os/signal"
-    "syscall"
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+	"os/signal"
+	"syscall"
 
-    "github.com/bwmarrin/discordgo"
+	"github.com/bwmarrin/discordgo"
 )
 
 func main() {
@@ -62,24 +63,57 @@ func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
     }
 }
 
+// Generates permissions for roles assigned to this category and for the user who created this topic
+//
+// Interaction context is needed to get the user that started interaction.
+// Flags can be specified via https://discord.com/developers/docs/topics/permissions
+func GeneratePermissionsForCategory(categoryName string, i *discordgo.InteractionCreate, flags int64) []*discordgo.PermissionOverwrite {
+
+    permissions := []*discordgo.PermissionOverwrite{}
+
+    // Add roles assigned to this topic
+    allowedRoles := categoryRoles[categoryName]
+
+    for _, role := range allowedRoles {
+        permissions = append(permissions, &discordgo.PermissionOverwrite {
+            ID: role.ID,
+            Type: discordgo.PermissionOverwriteTypeRole,
+            Allow: flags,
+        })
+    }
+
+    // Add interacting user to this topic
+    permissions = append(permissions, &discordgo.PermissionOverwrite {
+        ID: i.Member.User.ID,
+        Type: discordgo.PermissionOverwriteTypeMember,
+        Allow: flags,
+    })
+
+    return permissions
+}
+
 func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
     componentId := i.MessageComponentData().CustomID
 
     // Confirmation on business topic creation
     // TODO: Automatically assign name, parent ID and role overwrites based on chosen option
     if componentId == "business" {
-        s.GuildChannelCreateComplex(i.GuildID, discordgo.GuildChannelCreateData {
-            Name: "test-topic",
+        channel, err := s.GuildChannelCreateComplex(i.GuildID, discordgo.GuildChannelCreateData {
+            Name: fmt.Sprintf("%s-%d", componentId, rand.Int31n(99999)),
             Type: 0,
             ParentID: "974322254227841044",
-            PermissionOverwrites: []*discordgo.PermissionOverwrite {
-                {
-                    ID: i.Member.User.ID,
-                    Type: discordgo.PermissionOverwriteTypeMember,
-                    Allow: 1 << 10,
-                },
-            },
+            PermissionOverwrites: GeneratePermissionsForCategory(componentId, i, 1 << 10),
         })
+
+        if err != nil {
+            fmt.Printf("Error when creating a channel")
+        }
+
+        s.ChannelMessageSendComplex(channel.ID, closeTopicMessage)
+    }
+
+    if componentId == "close-topic" {
+        s.ChannelDelete(i.ChannelID)
     }
 }
 
