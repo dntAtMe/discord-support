@@ -1,6 +1,7 @@
 # Discord Support Bot
 We needed a discord bot that would allow us to provide support more easily, without people needing to know who to contact with their specific issue.
 Most ticket systems we looked at were either a bit outdated or we just didn't like how it handled interactions with user. This bot was created so we could customize it to our own liking.
+![GIF](https://media1.giphy.com/media/cW3KrwPxOgT4eXQkdI/giphy.gif)
 
 ## How it works
 This bot utilizes popular "ticket system" and puts a little twist on it via interactions published by Discord API.
