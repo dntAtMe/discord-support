@@ -6,6 +6,12 @@ import (
 
 func TestReadAuth(t *testing.T) {
 
+    targetAuth := Auth {
+        Token: "token",
+        GuildID: "guildId",
+        AppID: "appId",
+    }
+
     // If any function panics, catch it
     defer func() {
         if r := recover(); r != nil {
@@ -14,18 +20,18 @@ func TestReadAuth(t *testing.T) {
     }()
 
     var auth Auth
-    ReadAuth(&auth, "example_auth.json")
+    readAuth(&auth, "example_auth.json")
 
-    if auth.Token != "token" {
-        t.Log("Auth token should be \"token\" but got", auth.Token)
+    if auth.Token != targetAuth.Token {
+        t.Logf("Auth token should be %s but got %s", targetAuth.Token, auth.Token)
         t.Fail()
     }
-    if auth.GuildID != "guildId" {
-        t.Log("Auth token should be \"guildId\" but got", auth.GuildID)
+    if auth.GuildID != targetAuth.GuildID {
+        t.Logf("Auth token should be %s but got %s", targetAuth.GuildID, auth.GuildID)
         t.Fail()
     }
-    if auth.AppID != "appId" {
-        t.Log("Auth token should be \"appId\" but got", auth.AppID)
+    if auth.AppID != targetAuth.AppID {
+        t.Logf("Auth token should be %s but got %s", targetAuth.AppID, auth.AppID)
         t.Fail()
     }
 

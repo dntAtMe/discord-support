@@ -15,7 +15,7 @@ type Auth struct {
 
 var configPath = "../config/"
 
-func ReadAuth(auth *Auth, fileName string) {
+func readAuth(auth *Auth, fileName string) {
 
     authPath := fmt.Sprintf("%s%s", configPath, fileName)
     jsonFile, err := os.Open(authPath)

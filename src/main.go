@@ -14,7 +14,7 @@ import (
 func main() {
     var auth Auth
 
-    ReadAuth(&auth, "auth.json")
+    readAuth(&auth, "auth.json")
 
     botToken := fmt.Sprintf("Bot %s", auth.Token)
 
@@ -48,10 +48,10 @@ func main() {
 
     fmt.Println("Bot is now running")
     
-    SetupKillSignals()
+    setupKillSignals()
 }
 
-func SetupKillSignals() {
+func setupKillSignals() {
     sc := make(chan os.Signal, 1)
     signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
     <-sc
@@ -72,8 +72,7 @@ func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 //
 // Interaction context is needed to get the user that started interaction.
 // Flags can be specified via https://discord.com/developers/docs/topics/permissions
-func GeneratePermissionsForCategory(categoryName string, i *discordgo.InteractionCreate, flags int64) []*discordgo.PermissionOverwrite {
-
+func generatePermissionsForCategory(categoryName string, i *discordgo.InteractionCreate, flags int64) []*discordgo.PermissionOverwrite {
     permissions := []*discordgo.PermissionOverwrite{}
 
     // Add default roles
@@ -133,7 +132,7 @@ func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCrea
                 Name: fmt.Sprintf("%s-%d", componentId, rand.Int31n(99999)),
                 Type: 0,
                 ParentID: supportCategories[ENV],
-                PermissionOverwrites: GeneratePermissionsForCategory(componentId, i, 1 << 10),
+                PermissionOverwrites: generatePermissionsForCategory(componentId, i, 1 << 10),
             })
 
             if err != nil {
@@ -209,7 +208,6 @@ func componentInteractionHandler(s *discordgo.Session, i *discordgo.InteractionC
 
 // Intercepts user messages and handles them
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-    
     // Ignore messages from self
     if m.Author.ID == s.State.User.ID {
         return
