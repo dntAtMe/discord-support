@@ -7,6 +7,8 @@ type Role struct {
 }
 
 var roles = map[string]Role {
-    "CommunityManager": { ID: "974325942728151120" },
+    "CommunityManager": { ID: "434331919895756800" },
+    "ProjectManager": { ID: "434330942342168576" },
 }
+
 
