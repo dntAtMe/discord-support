@@ -53,9 +53,9 @@ func yesOrNoButtons(yesId string, noId string) []discordgo.MessageComponent {
     }
 }
 
-func closeTopicMessage(category string) *discordgo.MessageSend {
+func closeTopicMessage(user *discordgo.User, category string) *discordgo.MessageSend {
     return &discordgo.MessageSend {
-        Content: categoryCreationInfo[category],
+        Content: user.Mention() + "\n" + categoryCreationInfo[category],
         Components: []discordgo.MessageComponent {
             discordgo.ActionsRow {
                 Components: []discordgo.MessageComponent {
