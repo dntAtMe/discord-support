@@ -6,12 +6,17 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/google/uuid"
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	var auth Auth
 
 	readAuth(&auth, "auth.json")
@@ -64,6 +69,8 @@ func interactionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	//    basicInteractionHandler(s, i)
 	case discordgo.InteractionMessageComponent:
 		componentInteractionHandler(s, i)
+	case discordgo.InteractionModalSubmit:
+		modalInteractionHandler(s, i)
 	}
 }
 
@@ -127,8 +134,9 @@ func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 	// Go through all existing categories and check if button pressed is confirmation of a category creation
 	for _, categoryOption := range helpCategories {
 		if componentId == categoryOption.Value {
+			uuid := uuid.New()
 			channel, err := s.GuildChannelCreateComplex(i.GuildID, discordgo.GuildChannelCreateData{
-				Name:                 fmt.Sprintf("%s-%d", componentId, rand.Int31n(99999)),
+				Name:                 fmt.Sprintf("%s_%s", componentId, uuid.String()),
 				Type:                 0,
 				ParentID:             supportCategories[ENV],
 				PermissionOverwrites: generatePermissionsForCategory(componentId, i, 1<<10),
@@ -161,23 +169,54 @@ func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 		roleFound := false
 		for _, role := range i.Interaction.Member.Roles {
 			if role == roles["CommunityManager"].ID || role == roles["ProjectManager"].ID {
-				requestee := i.Message.Mentions[0].ID
-				privateChannel, _ := s.UserChannelCreate(requestee)
-				messages, whoopsie := s.ChannelMessages(i.ChannelID, 1, "", "", "")
-				if whoopsie != nil {
-					fmt.Println(whoopsie)
-				}
-				lastMessage := messages[0]
-				s.ChannelMessageSend(privateChannel.ID, "Zamknięto temat: "+lastMessage.Content)
 				roleFound = true
-				s.ChannelDelete(i.ChannelID)
+
+				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseModal,
+					Data: &discordgo.InteractionResponseData{
+						CustomID: "close-topic-m_" + i.Message.Mentions[0].ID + "_" + i.ChannelID,
+						Title:    "Zamknięcie tematu",
+						Components: []discordgo.MessageComponent{
+							discordgo.ActionsRow{
+								Components: []discordgo.MessageComponent{
+									discordgo.TextInput{
+										CustomID:    "response",
+										Label:       "Odpowiedź:",
+										Style:       discordgo.TextInputParagraph,
+										Placeholder: "Puste jeśli bez odpowiedzi",
+										Required:    false,
+										MaxLength:   300,
+										MinLength:   0,
+									},
+								},
+							},
+						},
+					},
+				})
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
 			}
 		}
 
+		// Not a Community Manager or Project Manager
 		if !roleFound {
-			s.ChannelPermissionSet(i.ChannelID, i.Member.User.ID, discordgo.PermissionOverwriteTypeMember, 0, 1<<10)
-			s.ChannelMessageSend(i.ChannelID, "<@"+i.Member.User.ID+"> opuścił kanał")
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content:    "Nie masz uprawnień do zamykania tematu",
+					Flags:      1 << 6,
+					Components: []discordgo.MessageComponent{},
+				},
+			})
 		}
+	}
+
+	if componentId == "leave" {
+		s.ChannelPermissionSet(i.ChannelID, i.Member.User.ID, discordgo.PermissionOverwriteTypeMember, 0, 1<<10)
+		s.ChannelMessageSend(i.ChannelID, "<@"+i.Member.User.ID+"> opuścił kanał")
 	}
 
 	if componentId == "no" {
@@ -189,6 +228,78 @@ func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 				Components: helpMenu,
 			},
 		})
+	}
+}
+
+func reverse(arr []*discordgo.Message) []*discordgo.Message {
+	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+	return arr
+}
+
+func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	data := i.ModalSubmitData()
+	componentId := data.CustomID
+
+	if strings.HasPrefix(componentId, "close-topic-m") {
+		requesteeID := strings.Split(componentId, "_")[1]
+		requestee, err := s.User(requesteeID)
+
+		channelID := strings.Split(componentId, "_")[2]
+
+		fmt.Printf("Requestee: %s\n", requesteeID)
+		fmt.Printf("ChannelID: %s\n", channelID)
+
+		responseMessage := data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+
+		fmt.Printf("Response: %s\n", responseMessage)
+
+		if strings.Trim(responseMessage, " \n") != "" {
+			// Estabilish private chat with requestee
+			privateChannel, _ := s.UserChannelCreate(requesteeID)
+
+			// Send requestee a message if there is something to send
+			s.ChannelMessageSend(privateChannel.ID, "Zamknięto temat: "+responseMessage)
+		}
+		// Copy all messages to database
+		messages, err := s.ChannelMessages(channelID, 100, "", "", "")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		supportChannel, err := s.Channel(channelID)
+
+		// Create channel in archive
+		archiveCategory, _ := s.Channel("978772539667009687")
+		archiveChannel, _ := s.GuildChannelCreateComplex(archiveCategory.GuildID, discordgo.GuildChannelCreateData{
+			Name:     strings.Split(supportChannel.Name, "_")[0] + "_" + requestee.Username,
+			Type:     0,
+			ParentID: archiveCategory.ID,
+		})
+
+		for _, message := range reverse(messages) {
+			/*
+				      db.LogMessage(&db.Message{
+								AuthorId: message.Author.ID,
+								Content:  message.Content,
+								Date:     message.Timestamp.String(),
+							}, supportChannel.Name)
+			*/
+			var attachmentsContent string = ""
+			for _, attach := range message.Attachments {
+				attachmentsContent += "\n" + attach.ProxyURL
+			}
+
+			s.ChannelMessageSendComplex(archiveChannel.ID, &discordgo.MessageSend{
+				Content:    fmt.Sprintf("%s (%s): %s %s", message.Author.Mention(), message.Author.Username, message.Content, attachmentsContent),
+				Embeds:     message.Embeds,
+				Components: message.Components,
+			})
+		}
+
+		s.ChannelDelete(channelID)
 	}
 }
 
