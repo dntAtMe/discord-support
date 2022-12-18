@@ -30,6 +30,10 @@ func main() {
 		return
 	}
 
+    discord.Identify.Presence.Game = discordgo.Activity {
+        Name: "Serwer online",
+    }
+
 	discord.AddHandler(interactionHandler)
 	discord.AddHandler(messageHandler)
 
@@ -243,8 +247,16 @@ func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 	componentId := data.CustomID
 
 	if strings.HasPrefix(componentId, "close-topic-m") {
+		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Temat zamknięty",
+				Flags:   uint64(discordgo.MessageFlagsEphemeral),
+			},
+		})
+
 		requesteeID := strings.Split(componentId, "_")[1]
-		requestee, err := s.User(requesteeID)
+//		requestee, err := s.User(requesteeID)
 
 		channelID := strings.Split(componentId, "_")[2]
 
@@ -263,23 +275,23 @@ func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 			s.ChannelMessageSend(privateChannel.ID, "Zamknięto temat: "+responseMessage)
 		}
 		// Copy all messages to database
-		messages, err := s.ChannelMessages(channelID, 100, "", "", "")
+		//messages, err := s.ChannelMessages(channelID, 100, "", "", "")
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		supportChannel, err := s.Channel(channelID)
+	//	supportChannel, err := s.Channel(channelID)
 
 		// Create channel in archive
-		archiveCategory, _ := s.Channel("978772539667009687")
-		archiveChannel, _ := s.GuildChannelCreateComplex(archiveCategory.GuildID, discordgo.GuildChannelCreateData{
-			Name:     strings.Split(supportChannel.Name, "_")[0] + "_" + requestee.Username,
-			Type:     0,
-			ParentID: archiveCategory.ID,
-		})
+		//archiveCategory, _ := s.Channel("1024238205660311553")
+		//archiveChannel, _ := s.GuildChannelCreateComplex(archiveCategory.GuildID, discordgo.GuildChannelCreateData{
+		//	Name:     strings.Split(supportChannel.Name, "_")[0] + "_" + requestee.Username,
+	//		Type:     0,
+	//		ParentID: archiveCategory.ID,
+	//	})
 
-		for _, message := range reverse(messages) {
+	//	for _, message := range reverse(messages) {
 			/*
 				      db.LogMessage(&db.Message{
 								AuthorId: message.Author.ID,
@@ -287,17 +299,17 @@ func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 								Date:     message.Timestamp.String(),
 							}, supportChannel.Name)
 			*/
-			var attachmentsContent string = ""
-			for _, attach := range message.Attachments {
-				attachmentsContent += "\n" + attach.ProxyURL
-			}
+	//		var attachmentsContent string = ""
+	//		for _, attach := range message.Attachments {
+	//			attachmentsContent += "\n" + attach.ProxyURL
+	//		}
 
-			s.ChannelMessageSendComplex(archiveChannel.ID, &discordgo.MessageSend{
-				Content:    fmt.Sprintf("%s (%s): %s %s", message.Author.Mention(), message.Author.Username, message.Content, attachmentsContent),
-				Embeds:     message.Embeds,
-				Components: message.Components,
-			})
-		}
+	//		s.ChannelMessageSendComplex(archiveChannel.ID, &discordgo.MessageSend{
+	///			Content:    fmt.Sprintf("%s (%s): %s %s", message.Author.ID, message.Author.Username, message.Content, attachmentsContent),
+	//			Embeds:     message.Embeds,
+	//			Components: message.Components,
+	//		})
+	//	}
 
 		s.ChannelDelete(channelID)
 	}
