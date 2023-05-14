@@ -8,5 +8,6 @@ var Locale_pl = Locale{
 	MENU_HELP_PLACEHOLDER: "Z czym potrzebujesz pomocy?",
 	BUTTON_HELP:           "Kontakt",
 	BUTTON_CLOSE_TOPIC:    "Zamknij temat",
+	BUTTON_DEV_TOPIC:      "Sprawa do świni",
 	BUTTON_LEAVE:          "Opuść temat",
 }

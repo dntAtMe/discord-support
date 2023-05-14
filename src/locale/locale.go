@@ -8,5 +8,6 @@ type Locale struct {
 	MENU_HELP_PLACEHOLDER string
 	BUTTON_HELP           string
 	BUTTON_CLOSE_TOPIC    string
+	BUTTON_DEV_TOPIC      string
 	BUTTON_LEAVE          string
 }

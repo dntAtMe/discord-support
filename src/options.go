@@ -70,6 +70,11 @@ func closeTopicMessage(user *discordgo.User, category string) *discordgo.Message
 						Style:    discordgo.DangerButton,
 						Disabled: false,
 						CustomID: "close-topic",
+					}, discordgo.Button{
+						Label:    usedLocale.BUTTON_DEV_TOPIC,
+						Style:    discordgo.SecondaryButton,
+						Disabled: false,
+						CustomID: "dev-topic",
 					},
 				},
 			},

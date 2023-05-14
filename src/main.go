@@ -30,9 +30,9 @@ func main() {
 		return
 	}
 
-    discord.Identify.Presence.Game = discordgo.Activity {
-        Name: "Serwer online",
-    }
+	discord.Identify.Presence.Game = discordgo.Activity{
+		Name: "Serwer online",
+	}
 
 	discord.AddHandler(interactionHandler)
 	discord.AddHandler(messageHandler)
@@ -169,6 +169,19 @@ func buttonInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 		}
 	}
 
+	if componentId == "dev-topic" {
+		s.ChannelPermissionSet(i.ChannelID, "700406539512447037", discordgo.PermissionOverwriteTypeMember, 1<<10, 0)
+		s.ChannelMessageSend(i.ChannelID, "Wezwano <@700406539512447037>")
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content:    "Wezwano świnię",
+				Flags:      1 << 6,
+				Components: []discordgo.MessageComponent{},
+			},
+		})
+	}
+
 	if componentId == "close-topic" {
 		roleFound := false
 		for _, role := range i.Interaction.Member.Roles {
@@ -256,7 +269,7 @@ func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 		})
 
 		requesteeID := strings.Split(componentId, "_")[1]
-//		requestee, err := s.User(requesteeID)
+		//		requestee, err := s.User(requesteeID)
 
 		channelID := strings.Split(componentId, "_")[2]
 
@@ -281,35 +294,35 @@ func modalInteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 			fmt.Println(err)
 		}
 
-	//	supportChannel, err := s.Channel(channelID)
+		//	supportChannel, err := s.Channel(channelID)
 
 		// Create channel in archive
 		//archiveCategory, _ := s.Channel("1024238205660311553")
 		//archiveChannel, _ := s.GuildChannelCreateComplex(archiveCategory.GuildID, discordgo.GuildChannelCreateData{
 		//	Name:     strings.Split(supportChannel.Name, "_")[0] + "_" + requestee.Username,
-	//		Type:     0,
-	//		ParentID: archiveCategory.ID,
-	//	})
+		//		Type:     0,
+		//		ParentID: archiveCategory.ID,
+		//	})
 
-	//	for _, message := range reverse(messages) {
-			/*
-				      db.LogMessage(&db.Message{
-								AuthorId: message.Author.ID,
-								Content:  message.Content,
-								Date:     message.Timestamp.String(),
-							}, supportChannel.Name)
-			*/
-	//		var attachmentsContent string = ""
-	//		for _, attach := range message.Attachments {
-	//			attachmentsContent += "\n" + attach.ProxyURL
-	//		}
+		//	for _, message := range reverse(messages) {
+		/*
+			      db.LogMessage(&db.Message{
+							AuthorId: message.Author.ID,
+							Content:  message.Content,
+							Date:     message.Timestamp.String(),
+						}, supportChannel.Name)
+		*/
+		//		var attachmentsContent string = ""
+		//		for _, attach := range message.Attachments {
+		//			attachmentsContent += "\n" + attach.ProxyURL
+		//		}
 
-	//		s.ChannelMessageSendComplex(archiveChannel.ID, &discordgo.MessageSend{
-	///			Content:    fmt.Sprintf("%s (%s): %s %s", message.Author.ID, message.Author.Username, message.Content, attachmentsContent),
-	//			Embeds:     message.Embeds,
-	//			Components: message.Components,
-	//		})
-	//	}
+		//		s.ChannelMessageSendComplex(archiveChannel.ID, &discordgo.MessageSend{
+		///			Content:    fmt.Sprintf("%s (%s): %s %s", message.Author.ID, message.Author.Username, message.Content, attachmentsContent),
+		//			Embeds:     message.Embeds,
+		//			Components: message.Components,
+		//		})
+		//	}
 
 		s.ChannelDelete(channelID)
 	}
