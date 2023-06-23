@@ -14,24 +14,24 @@ var helpCategories = []discordgo.SelectMenuOption{
 		Default:     false,
 		Description: "Tu możesz zgłosić naruszenie regulaminu przez innego gracza (...)",
 	},
-    {
+	{
 		Label: "Lepszy start po CK Twojej głównej postaci",
 		Value: "second-life",
 		Emoji: discordgo.ComponentEmoji{
 			Name: "💰",
 		},
 		Default:     false,
-        Description: "Podanie o lepszy start nowej postaci po uśmierceniu poprzedniej.",
+		Description: "Podanie o lepszy start nowej postaci po uśmierceniu poprzedniej.",
 	},
-    {
-        Label: "Organizacja eventu",
-        Value: "event",
-        Emoji: discordgo.ComponentEmoji{
-            Name: "🎫",
-        },
-        Default: false,
-        Description: "Miejsce na Twój pomysł z eventem dla graczy.",
-    },
+	{
+		Label: "Organizacja eventu",
+		Value: "event",
+		Emoji: discordgo.ComponentEmoji{
+			Name: "🎫",
+		},
+		Default:     false,
+		Description: "Miejsce na Twój pomysł z eventem dla graczy.",
+	},
 	{
 		Label: "Podanie o biznes",
 		Value: "biznes",
@@ -68,24 +68,24 @@ var helpCategories = []discordgo.SelectMenuOption{
 		Default:     false,
 		Description: "Tu możesz ubiegać się o uśmiercenie postaci innego gracza.",
 	},
-    {
-        Label: "Podanie o FCJ",
-        Value: "fcj",
-        Emoji: discordgo.ComponentEmoji{
-            Name: "🚗",
-        },
-        Default: false,
-        Description: "Tu możesz ubiegać się o przepisanie na siebie pojazdu innego gracza",
-    },
-    {
-        Label: "Donate",
-        Value: "donate",
-        Emoji: discordgo.ComponentEmoji{
-            Name: "💰",
-        },
-        Default: false,
-        Description: "Pomoc w sprawach związanych z donacjami na serwer",
-    },
+	{
+		Label: "Podanie o FCJ",
+		Value: "fcj",
+		Emoji: discordgo.ComponentEmoji{
+			Name: "🚗",
+		},
+		Default:     false,
+		Description: "Tu możesz ubiegać się o przepisanie na siebie pojazdu innego gracza",
+	},
+	{
+		Label: "Donate",
+		Value: "donate",
+		Emoji: discordgo.ComponentEmoji{
+			Name: "💰",
+		},
+		Default:     false,
+		Description: "Pomoc w sprawach związanych z donacjami na serwer",
+	},
 	{
 		Label: "Sprawa do CM'a",
 		Value: "cm",
@@ -114,13 +114,13 @@ Dzięki temu zminimalizujemy ilość wewnętrznej komunikacji i szybciej zajmiem
 Czy chcesz zgłosić naruszenie regulaminu?
     `,
 
-    "second-life": `
+	"second-life": `
 >>> W tym miejscu możesz napisać podanie o lepszy start Twojej nowej postaci jeżeli w ramach rozgrywki uśmierciłeś swoją poprzednią główną postać.
 
 Liczymy na postacie, które były na serwerze kreowane przez długi czas, były rozpoznawalne i byliście do niej bardzo przywiązani a samo uśmiercenie miało wpływ na rozwój wydarzeń dla innych. Aczkolwiek nigdy nie mów nie - jeżeli Twoja postać nie spełnia wszystkich warunków a uważasz, że akcja jest warta wynagrodzenia nie wahaj się z nią podzielić.
     `,
 
-    "event": `
+	"event": `
 >>> W tym miejscu możesz szczegółowo przedstawić swój pomysł na zorganizowanie eventu serwerowego dla graczy. Opisz swój pomysł dosyć szczegółowo, nie zapomnij o opisaniu istotnych informacji takich jak szacunkowa długość trwania eventu, target czy też propozycji nagród.
     `,
 
@@ -167,14 +167,14 @@ Podanie o FCK może złożyć każdy, aczkolwiek musi być bardzo dobrze uargume
 Czy chcesz złożyć podanie o FCK?
     `,
 
-    "fcj": `
+	"fcj": `
 >>> Jeżeli chcesz z kimś wyrównać rachunki, ale powody nie są na tyle mocne, żeby ubiegać się o zabicie postaci; możesz spróbować FCJ. 
 Jest to dobry sposób na rozliczenie się z kimś, kto podpadł Tobie lub Twojej grupie.
 
 Czy chcesz złożyć podanie o FCJ?
     `,
 
-    "donate": `
+	"donate": `
 >>> Tu możesz przekazać nam dodatkowe informacje związane z donacją lub zadać pytanie
     `,
 
@@ -197,7 +197,7 @@ var categoryCreationInfo = map[string]string{
 >>> Napisz czego dotyczy Twoje zgłoszenie wraz z ewentualnymi załącznikami (screeny/nagrania).
     `,
 
-    "second-life": `
+	"second-life": `
 >>> Zgłoszenie jest widoczne tylko dla Administracji.
 
 W tym miejscu możesz napisać podanie o lepszy start Twojej nowej postaci jeżeli w ramach rozgrywki uśmierciłeś swoją poprzednią główną postać.
@@ -212,7 +212,7 @@ Jaki to miało wpływ na rozgrywkę innych:
 Twoje oczekiwania:
     `,
 
-    "event": `
+	"event": `
 >>> Zgłoszenie jest widoczne tylko dla Administracji oraz osób należących do naszego grona Event Team. 
 
 W tym miejscu możesz szczegółowo przedstawić swój pomysł na zorganizowanie eventu serwerowego dla graczy. Opisz swój pomysł dosyć szczegółowo, nie zapomnij o opisaniu istotnych informacji takich jak szacunkowa długość trwania eventu, target czy też propozycji nagród.
@@ -262,7 +262,7 @@ Wzór podania:
 **Co potem?:** Ważne aby to nie był jednorazowy zryw, jaki wpływ na dalszą grę Twoją i innych będzie miała na akcja?
     `,
 
-    "fcj": `
+	"fcj": `
 >>> Pisząc podanie pisz zwięźle i treściwie bez zbędnych informacji, których nie potrzebujemy. Przedstaw same fakty i powody, które będą mocno wskazywać na Twoją rację a tym samym rośnie szansa, że Twoje podanie zostanie rozpatrzone pozytywnie.
 
 Wzór podania:
@@ -273,7 +273,7 @@ Wzór podania:
 **Co potem?:** Ważne aby to nie był jednorazowy zryw, jaki wpływ na dalszą grę Twoją i innych będzie miała na akcja?
     `,
 
-    "donate": `
+	"donate": `
 >>> Tu możesz przekazać nam dodatkowe informacje związane z donacją lub zadać pytanie
     `,
 	"cm": `
@@ -294,8 +294,8 @@ var categoryRoles = map[string][]Role{
 	"fcj":         {roles["CrimeManager"]},
 	"organizacja": {roles["ServerAdmin"]},
 	"ub":          {roles["ServerAdmin"]},
-	"cm":      {},
-	"second-life":      {roles["ServerAdmin"]},
-    "event": {roles["CommunityManager"]},
+	"cm":          {},
+	"second-life": {roles["ServerAdmin"]},
+	"event":       {roles["CommunityManager"]},
 	"regulamin":   {roles["ServerAdmin"]},
 }
