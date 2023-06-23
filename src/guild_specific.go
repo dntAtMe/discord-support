@@ -15,6 +15,15 @@ var helpCategories = []discordgo.SelectMenuOption{
 		Description: "Tu możesz zgłosić naruszenie regulaminu przez innego gracza (...)",
 	},
 	{
+		Label: "Apelacja od bana",
+		Value: "ub",
+		Emoji: discordgo.ComponentEmoji{
+			Name: "⚖️",
+		},
+		Default:     false,
+		Description: "Tu możesz złożyć apelację o zdjęcie nałożonej kary (...)",
+	},
+	{
 		Label: "Lepszy start po CK Twojej głównej postaci",
 		Value: "second-life",
 		Emoji: discordgo.ComponentEmoji{
@@ -49,15 +58,6 @@ var helpCategories = []discordgo.SelectMenuOption{
 		},
 		Default:     false,
 		Description: "Tu możesz złożyć podanie o zorganizowaną grupę przestępczą (...)",
-	},
-	{
-		Label: "Podanie o UB",
-		Value: "ub",
-		Emoji: discordgo.ComponentEmoji{
-			Name: "😔",
-		},
-		Default:     false,
-		Description: "Tu możesz złożyć apelację o zdjęcie nałożonej kary (...)",
 	},
 	{
 		Label: "Podanie o FCK",
@@ -133,13 +133,13 @@ Liczymy na postacie, które były na serwerze kreowane przez długi czas, były 
     - Biznes który ma wykorzystywać zupełnie nową mechanikę potrzebuje do tego własnego skryptu, którego tworzenie może zająć trochę czasu
     - Trzecie i kolejne biznesy tego samego typu mają mniejszą szansę na zaakceptowanie
     - Biznesy które zajmują się pożyczkami/wynajmem/lotnictwem/bronią nie będą akceptowane
-    
+
 Po kliknięciu Tak zostanie utworzony nowy temat z szablonem.
 `,
 
 	"organizacja": `
->>> Aby starać się o własną organizację najlepiej jest zebrać małą grupę ludzi i bez pisania podania powoli zaczynać budować swoją reputację wśród innych graczy i administracji przez własne RP. 
-To jaką opinię ma dana grupa starająca się o własną organizację ma bardzo duży wpływ na to czy zostanie zaakceptowana. 
+>>> Aby starać się o własną organizację najlepiej jest zebrać małą grupę ludzi i bez pisania podania powoli zaczynać budować swoją reputację wśród innych graczy i administracji przez własne RP.
+To jaką opinię ma dana grupa starająca się o własną organizację ma bardzo duży wpływ na to czy zostanie zaakceptowana.
 Zanim napiszecie podanie dobrym pomysłem jest napisanie do jednego z Community Managerów, aby ustalić szczegóły i dowiedzieć się czy dana organizacja jest wolna lub czy jej założenie będzie miało sens. Po takiej rozmowie złóż podanie używając poniższego szablonu.
 
 Aby aplikować o organizację, lider musi mieć przegrane na serwerze łącznie 168h (7 dni) na wszystkich postaciach.
@@ -147,7 +147,7 @@ Aby aplikować o organizację, lider musi mieć przegrane na serwerze łącznie 
 **Wymagania jakie nalezy spełnić:**
 
 - Organizacja musi bazować na jednej z lore GTA (wszystkie gry)
-- Nie może nawiązywać bezpośrednio do jej lore, np. poprzez dane konkretnych postaci lub wydarzenia ze świata GTA 
+- Nie może nawiązywać bezpośrednio do jej lore, np. poprzez dane konkretnych postaci lub wydarzenia ze świata GTA
 - Należy umieścić ją w rozsądnej odległości od innych organizacji, aby nie przeludnić jednego punktu na mapie
 - Nie rozpatrujemy podań na "sety"
 - Biznesy "pod przykrywkę" będą rozpatrywane osobno
@@ -155,20 +155,20 @@ Aby aplikować o organizację, lider musi mieć przegrane na serwerze łącznie 
 
 	"ub": `
 >>> Jeżeli uważasz, że zostałeś niesłusznie ukarany banem na naszym serwerze możesz w tym miejscu złożyć apelację, którą skrupulatnie rozpatrzymy.
-Pamiętaj, że nie jest to miejsce na prośby o skrócenie kary a apelacje powinieneś złożyć tylko i wyłącznie w przypadku jeżeli uważasz, że ban został nadany niesłusznie lub omyłkowo.
+Pamiętaj, że **nie jest to miejsce na prośby o skrócenie kary**, a apelacje powinieneś złożyć tylko i wyłącznie w przypadku jeżeli uważasz, że ban został nadany niesłusznie lub omyłkowo.
 
 Czy chcesz złożyć podanie o UB?
     `,
 
 	"fck": `
 >>> Jeżeli Tobie lub Twojej organizacji przestępczej ktoś mocno zaszedł za skórę, możesz w tym miejscu złożyć podanie o permanentne uśmiercenie postaci danego gracza.
-Podanie o FCK może złożyć każdy, aczkolwiek musi być bardzo dobrze uargumentowane. Miej na uwadze zabawę również innych graczy. 
+Podanie o FCK może złożyć każdy, aczkolwiek musi być bardzo dobrze uargumentowane. Miej na uwadze zabawę również innych graczy.
 
 Czy chcesz złożyć podanie o FCK?
     `,
 
 	"fcj": `
->>> Jeżeli chcesz z kimś wyrównać rachunki, ale powody nie są na tyle mocne, żeby ubiegać się o zabicie postaci; możesz spróbować FCJ. 
+>>> Jeżeli chcesz z kimś wyrównać rachunki, ale powody nie są na tyle mocne, żeby ubiegać się o zabicie postaci; możesz spróbować FCJ.
 Jest to dobry sposób na rozliczenie się z kimś, kto podpadł Tobie lub Twojej grupie.
 
 Czy chcesz złożyć podanie o FCJ?
@@ -185,7 +185,7 @@ Czy chcesz stworzyć nowy temat?
     `,
 
 	"inne": `
->>> Skorzystaj z tej opcji jeśli nie widzisz kategorii dla tematu, jaki chcesz omówić z administracją. 
+>>> Skorzystaj z tej opcji jeśli nie widzisz kategorii dla tematu, jaki chcesz omówić z administracją.
 Temat widoczny dla całej moderacji.
 
 Czy chcesz stworzyć nowy temat?
@@ -194,7 +194,7 @@ Czy chcesz stworzyć nowy temat?
 
 var categoryCreationInfo = map[string]string{
 	"regulamin": `
->>> Napisz czego dotyczy Twoje zgłoszenie wraz z ewentualnymi załącznikami (screeny/nagrania).
+>>> Napisz czego dotyczy Twoje zgłoszenie. Koniecznie załącz zdjecia lub klipy. Bez dowodów rzadko jesteśmy w stanie zdecydować czy nastąpiło złamanie regulaminu.
     `,
 
 	"second-life": `
@@ -202,7 +202,7 @@ var categoryCreationInfo = map[string]string{
 
 W tym miejscu możesz napisać podanie o lepszy start Twojej nowej postaci jeżeli w ramach rozgrywki uśmierciłeś swoją poprzednią główną postać.
 
-Liczymy na postacie, które były na serwerze kreowane przez długi czas, były rozpoznawalne i byliście do niej bardzo przywiązani a samo uśmiercenie miało wpływ na rozwój wydarzeń dla innych. Aczkolwiek nigdy nie mów nie - jeżeli Twoja postać nie spełnia wszystkich warunków a uważasz, że akcja jest warta wynagrodzenia nie wahaj się z nią podzielić. 
+Liczymy na postacie, które były na serwerze kreowane przez długi czas, były rozpoznawalne i byliście do niej bardzo przywiązani a samo uśmiercenie miało wpływ na rozwój wydarzeń dla innych. Aczkolwiek nigdy nie mów nie - jeżeli Twoja postać nie spełnia wszystkich warunków a uważasz, że akcja jest warta wynagrodzenia nie wahaj się z nią podzielić.
 
 Wzór:
 Imię i nazwisko uśmierconej postaci:
@@ -213,7 +213,7 @@ Twoje oczekiwania:
     `,
 
 	"event": `
->>> Zgłoszenie jest widoczne tylko dla Administracji oraz osób należących do naszego grona Event Team. 
+>>> Zgłoszenie jest widoczne tylko dla Administracji oraz osób należących do naszego grona Event Team.
 
 W tym miejscu możesz szczegółowo przedstawić swój pomysł na zorganizowanie eventu serwerowego dla graczy. Opisz swój pomysł dosyć szczegółowo, nie zapomnij o opisaniu istotnych informacji takich jak szacunkowa długość trwania eventu, target czy też propozycji nagród.
 
@@ -241,14 +241,11 @@ Jednocześnie przypominamy, że całość projektu powinna być zgodna z regulam
     `,
 
 	"ub": `
->>> Wypełniając wzór pamiętaj aby swoją apelacje poprzeć jak największą liczbą dowodów, być może zwiększy to Twoją szansę na zdjęcie kary.
+>>> Podanie służy odwołaniu jedynie w sytuacji, kiedy ban został nałożony niesłusznie lub omyłkowo.
+**Nie proś o skrócenie bana.**
 
-_Wzór podania:_
 **Numer bana**: wyświetlany jest kiedy próbujesz wejść na serwer np. AWKD-BDH2
 
-**Opis sytuacji**: dokładny opis sytuacji sprzed bana
-**Coś od siebie**: jeżeli masz coś do dodania, napisz to
-**Dowody**: dowody które posiadasz na swoją niewinność zamieść tutaj
     `,
 
 	"fck": `
